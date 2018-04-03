@@ -1,7 +1,7 @@
 const request= require('request');
 const http = require('http');
-const interval=require('interval-promise');
 const email = require('./email.js');
+var cron = require('node-cron');
 
 class BaseModel{
     constructor(url){
@@ -13,7 +13,7 @@ class BaseModel{
             url:this.url,
             json:true
         },(error,response,body)=>{
-            const html = `${body.location.name}`;
+            const html = `Weather today in ${body.location.name} ${body.location.country} is: <br> ${body.current.temp_c} and will be ${body.current.condition.text}`;
             const to= 'dmitri.delta@gmail.com';
             const sendEmail = new email();
             sendEmail.createEmail(to,html);
@@ -23,14 +23,24 @@ class BaseModel{
     }
 
     sendRequests(){
-        interval(async ()=>{
-            this.getData();
-        },5000);
+        const self = this;
+        // interval(async ()=>{
+        //     this.getData();
+        // },5000);
+
+        const task = cron.schedule('* * */1 * *', function() {
+            self.getData();
+            console.log('start');
+
+
+        }, false);
+        
+        task.start();
     }
 
 }
 
-var base= new BaseModel('https://api.apixu.com/v1/current.json?key=040d38db6ee94cc691f90101180104&q=Chisinau');
+const base= new BaseModel('https://api.apixu.com/v1/current.json?key=040d38db6ee94cc691f90101180104&q=Chisinau');
 base.sendRequests();
 
 
