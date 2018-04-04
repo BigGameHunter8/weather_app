@@ -35,7 +35,7 @@ class BaseModel{
         const self = this;
         const task = cron.schedule('0 12 * * *', function() {
             self.getData();
-            console.log('start');
+            console.log('start sending emails');
         }, false);
         task.start();
     }
