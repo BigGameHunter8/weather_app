@@ -11,8 +11,8 @@ module.exports = class Email {
                 
                 service:'gmail',
                 auth: {
-                    user: 'dmitri.delta@gmail.com',
-                    pass: 'pavlino999' 
+                    user: '',
+                    pass: '' 
                 }
             });
         
